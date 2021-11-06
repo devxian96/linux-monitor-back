@@ -60,9 +60,17 @@ router.get("/usage", async (req, res) => {
     })
 
     // 네트워크 사용률
-     await si.networkStats().then((props) => {
-        const {rx_bytes, tx_bytes} = props[0]
-        obj = Object.assign(obj, {rx_bytes, tx_bytes})
+    await si.networkStats().then((props) => {
+        const {rx_sec, tx_sec} = props[0]
+        obj = Object.assign(obj, {rx_sec, tx_sec})
+    }).catch((err) => {
+        errorReport(res, err)
+    })
+
+    // 하드 사용률
+    await si.fsSize().then((props) => {
+        const {use} = props[0]
+        ob = Object.assign(obj, {hdd: use})
     }).catch((err) => {
         errorReport(res, err)
     })
